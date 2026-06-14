@@ -1,6 +1,14 @@
 # Proxy Scanner
 
-A powerful Bash-based proxy scanner for Linux that can scan IP ranges, detect open TCP ports, and validate HTTP and SOCKS5 proxy servers.
+A powerful Bash-based proxy scanner for Linux and Android (Termux) that can scan IP ranges, detect open TCP ports, and validate HTTP and SOCKS5 proxy servers.
+
+## Supported Platforms
+
+✅ Linux (Ubuntu, Debian, Arch, Fedora)
+
+✅ Android (Termux)
+
+---
 
 ## Features
 
@@ -16,6 +24,7 @@ A powerful Bash-based proxy scanner for Linux that can scan IP ranges, detect op
 * Multi-threaded scanning for high performance
 * Colored terminal output
 * Result export to text files
+* Linux and Android (Termux) support
 
 ---
 
@@ -30,25 +39,44 @@ A powerful Bash-based proxy scanner for Linux that can scan IP ranges, detect op
 
 * Curl (required for proxy validation)
 
-### Install Dependencies
+---
 
-#### Debian / Ubuntu
+## Install Dependencies
+
+### Debian / Ubuntu
 
 ```bash
 sudo apt update
 sudo apt install netcat-openbsd curl
 ```
 
-#### Arch Linux
+### Arch Linux
 
 ```bash
 sudo pacman -S openbsd-netcat curl
 ```
 
-#### Fedora
+### Fedora
 
 ```bash
 sudo dnf install nc curl
+```
+
+### Android (Termux)
+
+```bash
+pkg update && pkg upgrade -y
+pkg install bash
+pkg install netcat-openbsd
+pkg install curl
+```
+
+Verify installation:
+
+```bash
+bash --version
+nc -h
+curl --version
 ```
 
 ---
@@ -68,6 +96,68 @@ Run:
 ```bash
 ./proxy-scanner.sh
 ```
+
+---
+
+## Running on Android (Termux)
+
+This script is fully compatible with Termux and does not require root access.
+
+### Installation
+
+```bash
+pkg update && pkg upgrade -y
+pkg install git bash netcat-openbsd curl
+
+git clone https://github.com/yourusername/proxy-scanner.git
+cd proxy-scanner
+
+chmod +x proxy-scanner.sh
+./proxy-scanner.sh
+```
+
+### Recommended Mobile Settings
+
+For better battery life and performance on Android devices:
+
+```text
+TCP Scan Threads: 20-30
+Proxy Validation Threads: 10-20
+```
+
+Avoid scanning very large ranges such as:
+
+```text
+10.0.0.0/8
+172.16.0.0/12
+192.168.0.0/16
+```
+
+Large scans may consume significant CPU, RAM, and battery resources.
+
+### Notes
+
+* No root access required
+* Supports HTTP and SOCKS5 proxy validation
+* Supports CIDR and dash-notation ranges
+* Results are saved locally in the Termux environment
+* Works on Android phones and tablets
+
+### Troubleshooting
+
+If `nc` is not found:
+
+```bash
+pkg install netcat-openbsd
+```
+
+If `curl` is not found:
+
+```bash
+pkg install curl
+```
+
+If you are using the outdated Google Play version of Termux, install the latest version from F-Droid or GitHub.
 
 ---
 
@@ -116,12 +206,6 @@ Paste IP addresses directly into the terminal.
 
 Checks whether a TCP port is open.
 
-Example:
-
-```text
-192.168.1.10:8080
-```
-
 ### HTTP Proxy Validation
 
 Verifies that an open port actually works as an HTTP proxy.
@@ -136,29 +220,6 @@ Tests HTTP first and then SOCKS5 if HTTP validation fails.
 
 ---
 
-## Example Usage
-
-### Scan Common Proxy Ports
-
-```bash
-Ports:
-8080 3128 1080 8000
-```
-
-### Scan CIDR Range
-
-```text
-192.168.1.0/24
-```
-
-### Scan a Single Host
-
-```text
-192.168.1.100
-```
-
----
-
 ## Output Files
 
 ### Open Ports
@@ -167,38 +228,24 @@ Ports:
 tcp_open_YYYYMMDD_HHMMSS.txt
 ```
 
-Example:
-
-```text
-192.168.1.20:8080
-192.168.1.30:3128
-```
-
 ### Working Proxies
 
 ```text
 working_proxies_YYYYMMDD_HHMMSS.txt
 ```
 
-Example:
-
-```text
-192.168.1.20:8080 (HTTP proxy)
-192.168.1.50:1080 (SOCKS5)
-```
-
 ---
 
 ## Performance
 
-The scanner supports configurable parallel jobs:
+Default values:
 
 ```text
-TCP Scan Threads: Default 50
-Proxy Validation Threads: Default 20
+TCP Scan Threads: 50
+Proxy Validation Threads: 20
 ```
 
-Increasing these values can significantly reduce scan time on large networks.
+Increasing these values can significantly reduce scan time on powerful systems.
 
 ---
 
@@ -211,16 +258,7 @@ This tool is intended for:
 * Infrastructure auditing
 * Authorized proxy discovery
 
-Only scan systems and networks that you own or have permission to test.
-
----
-
-## Project Structure
-
-```text
-proxy-scanner.sh
-README.md
-```
+Only scan systems and networks that you own or have explicit permission to test.
 
 ---
 
